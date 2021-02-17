@@ -187,6 +187,54 @@ class BaseModel extends Model
         return false;
     }
 
+    
+    /**
+     * Method untuk delete data
+     * 
+     * @param array $data
+     * @param array $where
+     * @return integer|false Jka berhasil delete akan mengembalikan true, jika gagal akan mengembalikan False
+     */    
+    public function deleteData($where)
+    {
+        // update
+        $data = ['deleteDate' => date('Y-m-d H:i:s')];
+        $this->db->table($this->table)->update($data, $where);
+
+        // check if updated data excist
+        if( $this->where($data)->first() ) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Method untuk menghapus data yg terupdate
+     * Method ini hanya bisa digunakan jika data diupdate 5 manit sebelumnya
+     * 
+     * @param string $id id PK pada baris yg akan dihapus
+     * @return true|false jika berhasil mengembalikan true, jika gagal mengembalikan false
+     */  
+    public function rollbackDelete($id)
+    {
+        $currData = ['deleteDate' => null];
+        $data = $this->getCourseDaftar(['id'=>$id]);
+        $dateNow = date('Y-m-d H:i:s');
+        $dateAgo = date('Y-m-d H:i:s', strtotime($dateNow.' - 5 minutes'));
+
+        // cek jika data baru saja diupdate 
+        if ($data) {
+            if ($dateAgo <= $data['lastUpdate'] && $data['lastUpdate'] <= $dateNow ) {
+                // delete row
+                $this->db->table($this->table)->update($currData, ['id'=>$id]);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Method untuk membuat random string
      * 
