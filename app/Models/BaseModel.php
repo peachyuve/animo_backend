@@ -192,7 +192,7 @@ class BaseModel extends Model
      */  
     public function rollbackUpdate($id, $currData)
     {
-        $data = $this->getCourseDaftar(['id'=>$id]);
+        $data = $this->getData(['id'=>$id]);
         $dateNow = date('Y-m-d H:i:s');
         $dateAgo = date('Y-m-d H:i:s', strtotime($dateNow.' - 5 minutes'));
 
@@ -239,7 +239,7 @@ class BaseModel extends Model
     public function rollbackDelete($id)
     {
         $currData = ['deleteDate' => null];
-        $data = $this->getCourseDaftar(['id'=>$id]);
+        $data = $this->getData(['id'=>$id]);
         $dateNow = date('Y-m-d H:i:s');
         $dateAgo = date('Y-m-d H:i:s', strtotime($dateNow.' - 5 minutes'));
 
