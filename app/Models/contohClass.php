@@ -4,8 +4,8 @@ use CodeIgniter\Model;
 
 class contohClass extends BaseModel
 {
-    protected $table      = 'user';
-    protected $primaryKey = 'id';
-    protected $returnType = 'array';
-    protected $allowedFields= ['id','token','username','password'];
+    protected $table      = 'bahan'; // nama tabel yang terhubung
+    protected $primaryKey = 'id'; // primary key tabel
+    protected $returnType = 'array'; 
+    protected $allowedFields= ['id','token','username','password']; // kolom yang bisa dilakukan input, update, delete
 }
