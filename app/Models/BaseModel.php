@@ -63,7 +63,7 @@ class BaseModel extends Model
     {
         // Jika $dataExist ada, maka akan dilakukan pengecekan apakah data ada di db
         // jika ada maka tidak akan dilakukan proses input, dan mengembalikan false
-        if($this->getData($dataExist) && $dataExist){
+        if($dataExist && $this->getData($dataExist)){
            return false;
         }
 
