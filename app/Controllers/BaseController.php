@@ -35,9 +35,10 @@ class BaseController extends Controller
 	{
 		// Do Not Edit This Line
 		parent::initController($request, $response, $logger);
+		session();
 		
 		// load model
-		$this->User = new \App\Models\contohClass();
+		$this->User = new \App\Models\user();
 	}
 
 	public function sendEmail($fromEmail, $from, $to, $subject=null, $message=null){
