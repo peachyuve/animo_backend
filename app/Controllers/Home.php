@@ -2,6 +2,12 @@
 
 class Home extends BaseController
 {
+	
+	public function tambahBarang()
+    {
+        return view('index');
+    }
+
 	public function contohPage()
 	{
 		$data = [
@@ -9,5 +15,6 @@ class Home extends BaseController
 		];
 		return view('pages/verify', $data);
 	}
+
 
 }

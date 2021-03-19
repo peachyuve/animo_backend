@@ -9,3 +9,4 @@ class contohClass extends BaseModel
     protected $returnType = 'array';
     protected $allowedFields= ['id','token','username','password'];
 }
+
