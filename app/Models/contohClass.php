@@ -4,9 +4,9 @@ use CodeIgniter\Model;
 
 class contohClass extends BaseModel
 {
-    protected $table      = 'user';
+    protected $table      = 'Bahan';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields= ['id','token','username','password'];
+    protected $allowedFields= ['id','uniqueCode','nama','kategori','satuan','subBahan','merk', 'suplier','linkSuplier'];
 }
 

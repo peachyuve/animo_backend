@@ -65,57 +65,78 @@ class BaseModel extends Model
         // Jika $dataExist ada, maka akan dilakukan pengecekan apakah data ada di db
         // jika ada maka tidak akan dilakukan proses input, dan mengembalikan false
         if($this->getData($dataExist) && $dataExist){
-           return false;
-        }
-
-        // Generate Random id yg akan menjadi Primary Key
-        // Jika $idFirstName ada, maka akan ditambahkan string pada depan id
-        if($idFirstName!='ownClass'){
-            $idFirstName = preg_replace( '/(.+)Models/', '', (get_called_class()) );
-            $idFirstName = str_replace( '\\', '', $idFirstName);
-        }
-
-        $idList = $this->getData(0,'id');
-        if ($idList) {
-            $isUnique = false;
-            while(!$isUnique) { 
-                $id = $this->randomGenerator(5);
-                $id = $id;
-                if(!in_array($id, $idList)){
-                    $isUnique = true;
-                }
-            }
-            $data['id'] = $idFirstName.$id;
-        }else {
-            $data['id'] = $idFirstName.$this->randomGenerator(5);
-        }
-
-        // Generate Unique Code
-        $list = $this->getData(0,'uniqueCode');
-        $isUnique = false;
-        if ($list) {
-            while(!$isUnique) { 
-                $id = $this->randomGenerator(10, 1, 1, 0);
-                if(!in_array($id, $list)){
-                    $isUnique = true;
-                }
-            }
-            $data['uniqueCode'] = $id;
-        }else {
-            $data['uniqueCode'] = $this->randomGenerator(10, 1, 1, 0);
-        }
-
-        // insert
-        $this->insert($data);   
-
-        // Check data yg telah diinput
-        // jika ada return id
-        // jika tidak terinput return false
-        if( $this->getData($data) ) {
-            return $this->getData($data, 'id');
-        }else{
             return false;
-        }
+         }
+ 
+         // Generate Random id yg akan menjadi Primary Key
+         // Jika $idFirstName ada, maka akan ditambahkan string pada depan id
+         if($idFirstName=='ownClass'){
+             $idFirstName = preg_replace( '/(.+)Models/', '', (get_called_class()) );
+             $idFirstName = str_replace( '\\', '', $idFirstName);
+             $idFirstName = substr($idFirstName, 0, 3);
+         }
+ 
+         $idList = $this->getData(0,'id');
+         if (gettype($idList) != 'array'){
+             $isUnique = false;
+             while(!$isUnique) { 
+                 $id = $this->randomGenerator(5);
+                 $id = $id;
+                 if($id != $idList){
+                     $isUnique = true;
+                 }
+             }
+             $data['id'] = $idFirstName.$id;
+         }else if ($idList) {
+             $isUnique = false;
+             while(!$isUnique) { 
+                 $id = $this->randomGenerator(5);
+                 $id = $id;
+                 if(!in_array($id, $idList)){
+                     $isUnique = true;
+                 }
+             }
+             $data['id'] = $idFirstName.$id;
+         }else {
+             $data['id'] = $idFirstName.$this->randomGenerator(5);
+         }
+ 
+         // Generate Unique Code
+         $list = $this->getData(0,'uniqueCode');
+         $isUnique = false;
+         if (gettype($list) != 'array'){
+             $isUnique = false;
+             while(!$isUnique) { 
+                 $id = $this->randomGenerator(5);
+                 $id = $id;
+                 if($id != $list){
+                     $isUnique = true;
+                 }
+             }
+             $data['uniqueCode'] = $id;        
+         }else if ($list) {
+             while(!$isUnique) { 
+                 $id = $this->randomGenerator(10, 1, 1, 0);
+                 if(!in_array($id, $list)){
+                     $isUnique = true;
+                 }
+             }
+             $data['uniqueCode'] = $id;
+         }else {
+             $data['uniqueCode'] = $this->randomGenerator(10, 1, 1, 0);
+         }
+ 
+         // insert
+         $this->insert($data);
+ 
+         // Check data yg telah diinput
+         // jika ada return id
+         // jika tidak terinput return false 
+         if( $this->getData($data) ) {
+             return $this->getData($data, 'id');
+         }else{
+             return 'false';
+         }
     }
 
     /**
