@@ -33,16 +33,19 @@ class BaseController extends Controller
 	 */
 	public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
 	{
-		//session
-		$this->session = session();
 		// Do Not Edit This Line
 		parent::initController($request, $response, $logger);
-		$this->request = \Config\Services::request();
+		// session();
+		
 		// load model
-		$this->Bahan = new \App\Models\Bahan();
-		$this->porsi = new \App\Models\Porsi();
-		$this->resep = new \App\Models\Resep();
-		$this->resep_detail = new \App\Models\Resepdetail();
+		// load model
+		$this->Bahan = new \App\Models\contohClass();
+		$this->Dashboard = new \App\Models\Dashboard_model();
+		$this->Resep = new \App\Models\Resep_model();
+		$this->session = session();
+		$this->User = new \App\Models\user();
+		$this->Test = new \App\Models\Resep();
+		$this->Test2 = new \App\Models\Resepdetail();
 	}
 
 	public function sendEmail($fromEmail, $from, $to, $subject=null, $message=null){

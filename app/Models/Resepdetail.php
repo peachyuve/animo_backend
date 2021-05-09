@@ -4,9 +4,8 @@ use CodeIgniter\Model;
 
 class Resepdetail extends BaseModel
 {
-    protected $table      = 'Resep_detail';
-    protected $primaryKey = 'id';
-    protected $returnType = 'array';
-    protected $allowedFields= ['uniqueCode','idResep','idBahan','jumBahan','hargaBahan','subBahan','merk', 'suplier','linkSuplier','createDate','updateDate','deleteDate'];
+    protected $table      = 'resep_detail'; // nama tabel yang terhubung
+    protected $primaryKey = 'id'; // primary key tabel
+    protected $returnType = 'array'; 
+    protected $allowedFields= ['id','uniqueCode','idResep','idBahan','jumBahan','hargaBahan','hargaPerSatuan']; // kolom yang bisa dilakukan input, update, delete
 }
-
