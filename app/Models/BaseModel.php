@@ -3,6 +3,8 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
+use function PHPSTORM_META\type;
+
 class BaseModel extends Model
 {
     /**
@@ -16,9 +18,15 @@ class BaseModel extends Model
      * jika banyak akan mengembalikan array 2d, jika kosong akan mengembalikan False
      * 
      */    
-    public function getData($data=false, $column=false, $orderBy=false, $typeOrder='desc')
+    public function getData($data=false, $column=false, $orderBy=false, $typeOrder = 'desc', $isIncludeDelete = false)
     {
         // Where
+        if(!$isIncludeDelete){
+            if (!$data) {
+                $data = [];
+            }
+            $data = array_merge( $data, ['deleteDate' => null] );
+        }
         (!$data)?null:$this->where($data);
 
         // Order By

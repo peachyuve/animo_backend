@@ -5,7 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Controller;
 use App\Models\usermodel;
 
-class Login extends Controller
+class login extends Controller
 {
     public function index()
     {
@@ -19,33 +19,35 @@ class Login extends Controller
         $model = new usermodel();
         $username = $this->request->getVar('username');
         $userpassword = $this->request->getVar('userpassword');
-        $data = $model->where('nama', $username)->first();
+        
+        $data = $model->where('email', $username)->first(); // login dengan email
         if ($data) {
             $pass = $data['password'];
-            $verify_pass = password_verify($userpassword, $pass);
+            $verify_pass = password_verify($userpassword, base64_decode($pass));
             if ($verify_pass) {
                 $ses_data = [
-                    'id'       => $data['id'],
+                    'id'       => $data['uniqueCode'],
                     'nama'     => $data['nama'],
                     'email'    => $data['email'],
-                    'logged_in'     => TRUE
+                    'logged_in' => TRUE
                 ];
                 $session->set($ses_data);
                 return redirect()->to('/dashboard');
             } else {
                 $session->setFlashdata('msg', 'Wrong Password');
-                return redirect()->to('http://localhost:8081/login');
+                return redirect()->to('/login');
             }
         } else {
             $session->setFlashdata('msg', 'Username not Found');
-            return redirect()->to('http://localhost:8081/login');
+            return redirect()->to('/login');
         }
     }
 
     public function logout()
     {
+        print_r('tot');
         $session = session();
         $session->destroy();
-        return redirect()->to('http://localhost:8081/login');
+        return redirect()->to('/login');
     }
 }

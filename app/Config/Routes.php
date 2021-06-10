@@ -30,8 +30,40 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
-$routes->get('/dashboard', 'Dashboard::index', ['filter' => 'auth']);
+
+// register
+$routes->get('/register', 'register');
+$routes->post('/register/save', 'Register::save');
+
+// login
+$routes->get('/login', 'login');
+$routes->get('/logout', 'login::logout');
+
+// dashboard
+$routes->get('/dashboard', 'Dashboard');
+
+// produk
+$routes->get('/produk', 'Produk');
+
+// bahan
+$routes->get('/bahan', 'bahan');
+$routes->get('/bahan/input', 'bahan::insertDataBahan');
+$routes->get('/bahan/edit/(:segment)', 'bahan::editDataBahan/$1');
+$routes->get('/bahan/delete/(:segment)', 'bahan::proses_deleteDataBahan/$1');
+
+// stok bahan
+$routes->get('/stokbahan', 'stokbahan');
+
+// resep
+$routes->get('/resep/(:segment)', 'Resep/$1');
+$routes->get('/resep', 'Resep');
+$routes->get('/resep/input', 'Resep::insert');
+
+// pesanan
+$routes->get('/pesanan', 'Pesanan');
+$routes->get('/pesanan/input', 'Pesanan::insert');
+$routes->post('/pesanan/input', 'Pesanan::proses_input');
+
 
 /**
  * --------------------------------------------------------------------

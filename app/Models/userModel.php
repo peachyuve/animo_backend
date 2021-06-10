@@ -2,7 +2,7 @@
 
 use CodeIgniter\Model;
 
-class user extends BaseModel
+class userModel extends BaseModel
 {
     protected $table      = 'user'; // nama tabel yang terhubung
     protected $primaryKey = 'id'; // primary key tabel

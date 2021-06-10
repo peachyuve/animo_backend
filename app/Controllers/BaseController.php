@@ -14,6 +14,8 @@ namespace App\Controllers;
  * @package CodeIgniter
  */
 
+use App\Models\Bahan;
+use App\Models\ProdukModel;
 use CodeIgniter\Controller;
 
 class BaseController extends Controller
@@ -35,10 +37,18 @@ class BaseController extends Controller
 	{
 		// Do Not Edit This Line
 		parent::initController($request, $response, $logger);
-		session();
-		
-		// load model
-		$this->User = new \App\Models\user();
+		session()->set(['id' => 'q3S67']);
+
+		// model
+		$this->user = new \App\Models\userModel();
+		$this->produk = new \App\Models\ProdukModel();
+		$this->bahan = new \App\Models\Bahan();
+		$this->porsi = new \App\Models\PorsiModel();
+		$this->resep = new \App\Models\ResepModel();
+		$this->pesanan = new \App\Models\PesananModel();
+
+		// print prety json
+		header('Content-type: text/javascript');
 	}
 
 	public function sendEmail($fromEmail, $from, $to, $subject=null, $message=null){
