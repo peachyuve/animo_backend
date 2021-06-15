@@ -99,7 +99,7 @@
                     <div class="col-12">
                       <form
                         class="form-bayar"
-                        action=""
+                        action="/konfirmasiPembayaran"
                         method="POST"
                         enctype="multipart/form-data"
                       >

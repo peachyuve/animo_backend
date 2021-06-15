@@ -79,7 +79,7 @@
               <!-- ubah dengan data produk yang sedang dipilih user -->
               <div
                 style="
-                  background-image: url(https://2.bp.blogspot.com/-ONWkgAXHXE8/UQvKC0INcqI/AAAAAAAAAPU/CEZDoV6YA3c/s1600/far-cry3x-large.jpg);
+                  background-image: url(<?= $selectedProduk['img'] ?>);
                   background-position: center;
                   background-size: cover;
                 "
@@ -105,7 +105,7 @@
                     Bahan Produk
                   </h2>
                   <!-- query di bawah bertujuan untuk memfilter langsug berdasarkan produk setelah user diredirect ke laman Resep -->
-                  <a href="./resep.html?produk=PRODwf157" class="button-primary"
+                  <a href="./resep?produk=PRODwf157" class="button-primary"
                     >&plus;</a
                   >
                 </div>
@@ -119,16 +119,13 @@
                     </tr>
                   </thead>
                   <tbody>
+                    <?php foreach ($bahan as $keyBahan => $valBahan) { ?>
                     <tr>
-                      <td>Gula Manis Asin Asem Asin Asem Asin Manis</td>
-                      <td>250</td>
-                      <td>gr</td>
+                      <td><?= $valBahan['nama'] ?></td>
+                      <td><?= $valBahan['jumlah'] ?></td>
+                      <td><?= $valBahan['satuan'] ?></td>
                     </tr>
-                    <tr>
-                      <td>Tepung</td>
-                      <td>100</td>
-                      <td>gr</td>
-                    </tr>
+                    <?php } ?>
                   </tbody>
                 </table>
               </div>

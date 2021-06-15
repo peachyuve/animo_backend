@@ -84,8 +84,8 @@
                 <li class="list__item">
                   <img src="https://via.placeholder.com/90" alt="Placeholder" />
                   <div class="list__item-detail">
-                    <h3>Gula Aren Enak Gulaku Pakai Mentega Tidak Ada Obat</h3>
-                    <p>1 kg</p>
+                    <h3><?= $valStock['nama'] ?></h3>
+                    <p><?= $valStock['jumlah'] ?> <?= $valStock['satuan'] ?></p>
                   </div>
                 </li>
                 <?php } ?>
