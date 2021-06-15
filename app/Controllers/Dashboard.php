@@ -39,6 +39,6 @@ class Dashboard extends BaseController
 
 		// print('<pre>'.print_r($data,true).'</pre>');
 		
-		return view('dashboard', $data);
+		// return view('dashboard', $data);
 	}
 }

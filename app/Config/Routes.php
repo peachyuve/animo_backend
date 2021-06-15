@@ -32,7 +32,7 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 
 // register
-$routes->get('/register', 'register');
+$routes->get('/register', 'Register');
 $routes->post('/register/save', 'Register::save');
 
 // login

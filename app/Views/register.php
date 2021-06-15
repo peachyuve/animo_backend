@@ -21,7 +21,7 @@
         <div class="text-center">
           <h3>Daftar</h3>
           <p id="error"></p>
-          <form class="auth__form" id="form" action="/dashboard" method="GET" onsubmit="return validate()">
+          <form class="auth__form" id="form" action="/register/save" method="POST" onsubmit="return validate()">
             <label for="business">
               Nama bisnis
             </label>
