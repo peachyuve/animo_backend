@@ -16,7 +16,7 @@
       "
     >
       <!-- two first char name will be injected by js -->
-      <h2 id="header-abbr" class="header__abbr">  </h2>
+      <h2 id="header-abbr" class="header__abbr"> <?= session()->get('inisial') ?> </h2>
       <!-- need php injection for user name -->
       <h4 class="header__name d-none d-sm-block"> <?= session()->get('nama') ?> </h4>
       <svg

@@ -41,14 +41,14 @@
                 id="filter-toggler"
                 aria-expanded="false"
               >
-                <h4> <?= $selectedKategori ?> </h4>
+                <h4> <?= $selectedKategori['nama'] ?> </h4>
                 <span>&gt;</span>
               </button>
               <ul id="filter-group" class="filter__group">
                 <?php foreach ($kategori as $keyKategori => $valKategori) { ?>
                 <li class="filter__value">
-                  <a href="?kategori=<?= $valKategori ?>">
-                    <h4><?= $valKategori ?></h4>
+                  <a href="?kategori=<?= $valKategori['id'] ?>">
+                    <h4><?= $valKategori['nama'] ?></h4>
                   </a>
                 </li>
                 <?php } ?>
@@ -59,14 +59,19 @@
             </div>
             <ul class="products">
               <!-- pindahkan class "products__item--selected" ke item atau produk yang sedang dipilih oleh user, agar nanti item terpilih ada backgroundnya di UI -->
+              <?php if(!$produk){ ?>
+                <h4>
+                  Belum ada produk
+                </h4>
+              <?php } ?>
               <?php foreach ($produk as $keyProduk => $valProduk) { ?>
               <li class="products__item product<?= ($valProduk['isSelected'])?'s':'' ?>__item--selected">
-                  <a href="?kategori=<?= $valProduk['nama_kategori'] ?>&produk=<?= $valProduk['id'] ?>">
-                    <h4>
-                      <?= $valProduk['nama'] ?>
-                    </h4>
-                  </a>
-                </li>
+                <a href="?kategori=<?= $valProduk['idKategori'] ?>&produk=<?= $valProduk['id'] ?>">
+                  <h4>
+                    <?= $valProduk['nama'] ?>
+                  </h4>
+                </a>
+              </li>
               <?php } ?>
             </ul>
             <div data-modal="add-product" class="add-item">
@@ -75,6 +80,7 @@
             </div>
           </div>
           <div class="col-12 col-lg-6 order-1 order-lg-2 mb-5">
+            <?php if($selectedProduk) {?>
             <div class="product-detail">
               <!-- ubah dengan data produk yang sedang dipilih user -->
               <div
@@ -119,10 +125,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <?php foreach ($bahan as $keyBahan => $valBahan) { ?>
+                    <?php foreach ($selectedBahan as $keyBahan => $valBahan) { ?>
                     <tr>
                       <td><?= $valBahan['nama'] ?></td>
-                      <td><?= $valBahan['jumlah'] ?></td>
+                      <td><?= $valBahan['ukuranResep'] ?></td>
                       <td><?= $valBahan['satuan'] ?></td>
                     </tr>
                     <?php } ?>
@@ -130,6 +136,7 @@
                 </table>
               </div>
             </div>
+            <?php } ?>
           </div>
         </div>
       </main>
@@ -155,7 +162,7 @@
                 id="prod-kategori"
                 type="hidden"
                 name="category"
-                value="<?= $selectedKategori ?>"
+                value="<?= $selectedKategori['id'] ?>"
               />
               <div class="upload-image">
                 <input
@@ -228,7 +235,7 @@
       <dialog class="dialog dialog__add-prod-cat" id="add-prod-cat" open>
         <div class="dialog__backdrop">
           <div class="dialog__box">
-            <form id="form-add-prod-cat" action="" method="POST">
+            <form id="form-add-prod-cat" action="/produk/kategori" method="POST">
               <input
                 type="text"
                 id="prod-cat"
@@ -257,6 +264,7 @@
                 <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1z"/>
               </svg>
             </div>
+            <?php if($selectedProduk) {?>
             <form
               action="/produk/update/<?= $selectedProduk['id'] ?>"
               method="POST"
@@ -281,7 +289,7 @@
                 <!-- ubah url pada background di bawah menyesuaikan url gambar produknya, ini hanya sekedar preview -->
                 <label
                   style="
-                    background-image: url('https://2.bp.blogspot.com/-ONWkgAXHXE8/UQvKC0INcqI/AAAAAAAAAPU/CEZDoV6YA3c/s1600/far-cry3x-large.jpg');
+                    background-image: url(' <?= $selectedProduk['img'] ?> ');
                     background-size: cover;
                     background-position: center;
                   "
@@ -290,7 +298,7 @@
                   for="prod-image-edit"
                 ></label>
                 <!-- ubah dengan nama file nya -->
-                <p class="mt-3 text-center">doctor.jpeg</p>
+                <p class="mt-3 text-center"> <?= $selectedProduk['imgName'] ?> </p>
               </div>
               <div class="form-group">
                 <label class="form-label" for="product-name-edit"
@@ -345,6 +353,7 @@
                 <button class="button-primary" type="submit">Simpan</button>
               </div>
             </form>
+            <?php } ?>
           </div>
         </div>
       </dialog>

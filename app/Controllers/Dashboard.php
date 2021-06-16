@@ -1,6 +1,4 @@
-<?php 
-
-namespace App\Controllers;
+<?php namespace App\Controllers;
 
 use App\Models\DashboardModel;
 use App\Models\userModel;
@@ -11,13 +9,11 @@ class Dashboard extends BaseController
 	{
 		$Dashboard = new DashboardModel;
 
-		$uniq = session()->get('id');
-
 		// get user id
 		$idUser = new userModel();
 		$idUser = $idUser->getData(['uniqueCode' => session()->get('id')], 'id');
 
-		$data['pesanan'] = $Dashboard->GetPesanan(['uniqueCode','nama', 'harga','ukuran', 'jumlah']);
+		$data['pesanan'] = $Dashboard->GetPesanan(['uniqueCode','nama', 'harga','ukuran', 'jumlah','img']);
 		$data['stock'] = $Dashboard->StockHabis(['uniqueCode', 'nama','satuan', 'stokAkhir'], $idUser);
 
 		// handle data pesanan
@@ -36,9 +32,7 @@ class Dashboard extends BaseController
 
 		// handle data stok
 		if (!$data['stock']) $data['stock'] = [];
-
-		// print('<pre>'.print_r($data,true).'</pre>');
 		
-		// return view('dashboard', $data);
+		return view('dashboard', $data);
 	}
 }

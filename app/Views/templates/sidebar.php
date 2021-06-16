@@ -8,7 +8,7 @@
 </div>
 <ul class="sidebar__menus">
   <li class="sidebar__item">
-    <a class="sidebar__link" data-link="dashboard" href="/dashboard">
+    <a class="sidebar__link" data-link="dashboard" href="/">
       <img src="source/images/home.svg" alt="Home" />
       <p>Dashboard</p>
     </a>
@@ -20,25 +20,25 @@
     </a>
   </li>
   <li class="sidebar__item">
-    <a class="sidebar__link" data-link="bahan" href="../bahan.html">
+    <a class="sidebar__link" data-link="bahan" href="/bahan">
       <img src="source/images/files.svg" alt="Files" />
       <p>Bahan</p>
     </a>
   </li>
   <li class="sidebar__item">
-    <a class="sidebar__link" data-link="stok_bahan" href="../stok_bahan.html">
+    <a class="sidebar__link" data-link="stok_bahan" href="/stok_bahan">
       <img src="source/images/cart.svg" alt="Cart" />
       <p>Stok Bahan</p>
     </a>
   </li>
   <li class="sidebar__item">
-    <a class="sidebar__link" data-link="pesanan" href="../pesanan.html">
+    <a class="sidebar__link" data-link="pesanan" href="/pesanan">
       <img src="source/images/bag.svg" alt="Bag" />
       <p>Pesanan</p>
     </a>
   </li>
   <li class="sidebar__item">
-    <a class="sidebar__link" data-link="resep" href="../pesanan.html">
+    <a class="sidebar__link" data-link="resep" href="/pesanan">
       <img src="source/images/note.svg" alt="Note" />
       <p>Resep</p>
     </a>
@@ -75,7 +75,7 @@
     </a>
   </li>
   <li class="sidebar__item">
-    <a class="sidebar__link" data-link="keluar" href="../index.html">
+    <a class="sidebar__link" data-link="keluar" href="/logout">
       <img src="source/images/exit.svg" alt="Exit" />
       <p>Keluar</p>
     </a>

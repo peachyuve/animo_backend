@@ -1,56 +1,72 @@
 <!DOCTYPE html>
 <html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daftar</title>
 
-<head data-title="Daftar">
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/main.built.css">
-  <script defer="defer" src="./js/modules/InitialInject.js"></script>
-</head>
+    <!-- CSS -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="source/auth/auth.css" />
+  </head>
 
-<body class="auth">
+  <body class="auth">
     <!-- SIGN UP -->
     <main class="auth__main">
       <div class="auth__bg"></div>
       <div class="auth__card">
-        <div class="auth__box">
-          <img src="/img/pictures/logo.png" alt="">
-          <div class="text-center">
-            <h3>Daftar</h3>
-            <form action="" class="auth__form" id="form" method="post">
-            </form> <!-- harus ada biar bisa input -->
-            <form action="/register/save" class="auth__form" id="form" method="post">
-              <label for="business">
-                Nama bisnis
-              </label>
-              <input  type="text" name="business" id="business" value="<?= old('business') ?>">
-              <label for="city">
-                Kota keberadaan bisnis
-              </label>
-              <input  type="text" name="city" id="city" value="<?= old('city') ?>">
-              <label for="username">
-                Username
-              </label>
-              <input  type="text" name="username" id="username">
-              <label for="password">
-                Password
-              </label>
-              <input  type="password" name="password" id="password">
-              <br>
-              <button class="button" type="submit">Masuk</button>
-                <!-- <a href="dashboard.html">Go to
-                  Dashboard</a> -->
-            </form>
-          </div>
+        <img src="source/auth/img/logo.png" alt="Logo Animo" />
+        <div class="text-center">
+          <h3>Daftar</h3>
+          <p id="error"></p>
+          <form
+            class="auth__form"
+            id="form"
+            action="dashboard.html"
+            method="GET"
+            onsubmit="return validate()"
+          >
+            <label for="business"> Nama bisnis </label>
+            <input type="text" name="business" id="business" />
+            <label for="city"> Kota keberadaan bisnis </label>
+            <input type="text" name="city" id="city" />
+            <button class="button" type="submit" value="submit" id="login">
+              Masuk
+            </button>
+          </form>
         </div>
       </div>
     </main>
-    
+    <script>
+      function validate() {
+        let isInputValid = true;
+        const errorEl = document.getElementById("error");
+        const business = document.getElementById("business");
+        const city = document.getElementById("city");
+        const elements = [];
+        elements.push(business, city);
+        errorEl.textContent = "";
+        elements.forEach((el) => {
+          let value = el.value.trim();
+          if (value === "" || !value) {
+            isInputValid = false;
+            errorEl.insertAdjacentHTML(
+              "afterbegin",
+              el.labels[0].innerText + " wajib diisi<br>"
+            );
+          }
+        });
 
-  <!-- JS -->
-  <script src="js/plugins.js"></script>
-  <script type="module" src="js/LoginSignUp.js"></script>
-</body>
-
+        if (!isInputValid) {
+          return false;
+        }
+        localStorage.setItem("business", business.value);
+        return true;
+      }
+    </script>
+  </body>
 </html>

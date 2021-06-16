@@ -54,7 +54,7 @@
               <ul class="list__items">
                 <?php foreach ($pesanan as $keyPesanan => $valPesanan) { ?>
                 <li class="list__item">
-                  <img src="https://via.placeholder.com/90" alt="Placeholder" />
+                  <img src=" <?= $valPesanan['img'] ?> " alt="Placeholder" />
                   <div class="list__item-detail">
                     <h3>
                       <?= $valPesanan['nama'] ?> 
@@ -85,7 +85,7 @@
                   <img src="https://via.placeholder.com/90" alt="Placeholder" />
                   <div class="list__item-detail">
                     <h3><?= $valStock['nama'] ?></h3>
-                    <p><?= $valStock['jumlah'] ?> <?= $valStock['satuan'] ?></p>
+                    <p><?= $valStock['stokAkhir'] ?> <?= $valStock['satuan'] ?></p>
                   </div>
                 </li>
                 <?php } ?>

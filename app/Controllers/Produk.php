@@ -1,74 +1,115 @@
-<?php
-
-namespace App\Controllers;
+<?php namespace App\Controllers;
 
 use CodeIgniter\Controller;
 use App\Models\ProdukModel;
 use App\Models\KategoriModel;
 use App\Models\userModel;
+use App\Models\Bahan;
 
 class Produk extends Controller
 {
 
     public function __construct()
     {
-        session()->set(['id' => 'q3S67']);
-
-        // Mendeklarasikan class ProductModel menggunakan $this->product
         $this->produk = new ProdukModel();
-        // $this->kategori = new KategoriModel();
-        /* Catatan:
-        Apa yang ada di dalam function construct ini nantinya bisa digunakan
-        pada function di dalam class Product 
-        */
+        $this->kategori = new KategoriModel();
+        $this->bahan = new Bahan();
     }
 
     public function index()
     {
-        $kategoriList = $this->produk->kategori();
-
         $kategori = htmlspecialchars($this->request->getVar('kategori'));
         $produk = htmlspecialchars($this->request->getVar('produk'));
 
+        // handle kategori data
+        $kategoriList = $this->kategori->getData(0, ['id', 'nama']);
+        if (!$kategoriList) {
+            $data= [
+                'produk' => [],
+                'kategori' => [],
+                'selectedKategori' => '',
+                'selectedProduk' => []
+            ];
+
+            return view('produk', $data);
+        }
+        $kategoriList = (isset($kategoriList[0]))?$kategoriList:[$kategoriList];
+
+        // membuat kategori terpilih
         $selectedKategori = (in_array($kategori, $kategoriList))?$kategori:$kategoriList[0];
 
-        $produkList = $this->produk->getProduk($data = false, $column = false, $orderBy = false, $typeOrder = 'desc', $selectedKategori);
-        // handle harga dan id
-        foreach ($produkList as $keyProdukList => $valProdukList) {
-            $produkList[$keyProdukList]['id'] = $valProdukList['uniqueCode'];
-        }
+        // handle produk data
+        $produkList = $this->produk->getProduk();
+        if ($produkList) {
 
+            $produkList = $this->produk->getProduk(
+                $data = 0,
+                $column = 0,
+                $orderBy = 0,
+                $typeOrder = 'desc', 
+                $selectedKategori['id']
+            );
+    
+            // handle harga dan id
+            foreach ($produkList as $keyProdukList => $valProdukList) {
+                $produkList[$keyProdukList]['id'] = $valProdukList['uniqueCode'];
+            }
+
+            // cari produk yang di pilih
+            foreach ($produkList as $keyProduk => $valProduk) {
+                if ($valProduk['id'] == $produk) {
+                    $produkList[$keyProduk]['isSelected'] = 1;
+                    $selectedProduk = $valProduk;
+                }else{
+                    $produkList[$keyProduk]['isSelected'] = 0;
+                }
+            }
+            if (!isset($selectedProduk)) {
+                $produkList[0]['isSelected'] = 1;
+                $selectedProduk = $produkList[0];
+            }
+            
+            // menambahkan data nama img produk
+            $selectedProduk['imgName'] = explode('/', $selectedProduk['img']);
+            $selectedProduk['imgName'] = end($selectedProduk['imgName']);
+
+            // mengubah spasi menjadi %20
+            $selectedProduk['img'] = str_replace(' ', '%20', $selectedProduk['img']);
+
+            // ambil data bahan
+            $selectedBahan = $this->bahan->getBahanByProduk($selectedProduk['id']);
+        }else {
+            $produkList = [];
+            $selectedProduk = [];
+        }
+    
         $data= [
             'produk' => $produkList,
             'kategori' => $kategoriList,
             'selectedKategori' => $selectedKategori,
+            'selectedProduk' => $selectedProduk,
+            'selectedBahan' => ($selectedBahan)?$selectedBahan:[],
         ];
 
-        // handle product data
-        foreach ($data['produk'] as $keyProduk => $valProduk) {
-            if ($valProduk['id'] == $produk) {
-                $data['produk'][$keyProduk]['isSelected'] = 1;
-                $data['selectedProduk'] = $valProduk;
-            }else{
-                $data['produk'][$keyProduk]['isSelected'] = 0;
-            }
-        }
-        if (!isset($data['selectedProduk'])) {
-            $data['produk'][0]['isSelected'] = 1;
-            $data['selectedProduk'] = $data['produk'][0];
-        }
-
-        // print('<pre>'.print_r($data,true).'</pre>');
-
-        //dd($data);
         return view('produk', $data);
     }
 
-
-    public function create()
+    public function tambahKategori()
     {
-        $data['produk'] = $this->produk->getProduk();
-        return view('produk/create', $data);
+        $kategori = $this->request->getPost('category');
+        
+        // Mengambil idUser
+        $idUser = new userModel();
+        $idUser = $idUser->getData(['uniqueCode' => session()->get('id')], 'id');
+        
+        $idKategori = $this->kategori->insertData([
+            'kategori' => $kategori,
+            'idUser'   => $idUser,
+        ]);
+
+        if ($idKategori) {
+            return redirect()->to('/produk');
+        }
     }
 
 
@@ -81,10 +122,17 @@ class Produk extends Controller
         $satuan = $this->request->getPost('unit');
         $price = $this->request->getPost('price');
         $category = $this->request->getPost('category');
+        $image = $this->request->getFile('image');
 
         // Mengambil idUser
         $idUser = new userModel();
         $idUser = $idUser->getData(['uniqueCode' => session()->get('id')], 'id');
+
+        // Membuat path image
+        $imgPath = 'user/'.session()->get('folderTkn').'/img/produk/';
+
+        // get nama image
+        $imageName = $image->getName();
 
         // Membuat array collection yang disiapkan untuk insert ke table
         $data = [
@@ -93,7 +141,8 @@ class Produk extends Controller
             'ukuran' => $size,
             'satuan' => $satuan,
             'harga' => $price,
-            'nama_kategori' => $category,
+            'idKategori' => $category,
+            'img' => $imgPath.$imageName,
         ];
 
         /* 
@@ -104,21 +153,13 @@ class Produk extends Controller
 
         // Jika simpan berhasil, maka ...
         if ($simpan) {
+            // Pindah file ke direktory user
+            $image->move($imgPath, $imageName);
             // Deklarasikan session flashdata dengan tipe success
             session()->setFlashdata('success', 'Created product successfully');
             // Redirect halaman ke product
             return redirect()->to(base_url('produk'));
         }
-    }
-
-
-    public function edit($uniqueCode)
-    {
-        // Memanggil function getProduct($id) dengan parameter $id di dalam ProductModel dan menampungnya di variabel array product
-        $produk = $this->produk->getProduk(['uniqueCode' => $uniqueCode]);
-        $data['produk'] = $produk ? $produk[0] : false;
-        // Mengirim data ke dalam view
-        return redirect()->to(base_url('produk'));
     }
 
     public function update($uniqueCode)
@@ -128,13 +169,22 @@ class Produk extends Controller
         $size = $this->request->getPost('size');
         $satuan = $this->request->getPost('unit');
         $price = $this->request->getPost('price');
+        $image = $this->request->getFile('image');
+
+        // ambil path image lama
+        $tempImgPath = $this->produk->getProduk(['uniqueCode' => $uniqueCode], ['img'])[0];
+
+        // Membuat path image
+        $imgPath = 'user/'.session()->get('folderTkn').'/img/produk/';
+        $imageName = $image->getName();
 
         // Membuat array collection yang disiapkan untuk insert ke table
         $data = [
             'nama' => $name,
             'ukuran' => $size,
             'harga' => $price,
-            'harga' => $price
+            'satuan' => $satuan,
+            'img' => ($image->getName())?$imgPath.$imageName:$tempImgPath,
         ];
 
         /* 
@@ -145,6 +195,14 @@ class Produk extends Controller
 
         // Jika berhasil melakukan ubah
         if ($ubah) {
+            // cek jika file sudah ada ubah file lama dengan file baru
+            if(!file_exists($imgPath.$imageName)){
+                if (file_exists($tempImgPath)) {
+                    unlink($tempImgPath);
+                }
+                $image->move($imgPath, $imageName);
+            }
+
             // Deklarasikan session flashdata dengan tipe info
             session()->setFlashdata('info', 'Updated product successfully');
             // Redirect ke halaman product
@@ -154,7 +212,10 @@ class Produk extends Controller
 
     public function delete($uniqueCode)
     {
-        // Memanggil function delete_product() dengan parameter $id di dalam ProductModel dan menampungnya di variabel hapus
+        /* 
+        Memanggil function delete_product() dengan parameter $id 
+        di dalam ProductModel dan menampungnya di variabel hapus
+        */
         $hapus = $this->produk->delete_produk(['uniqueCode' => $uniqueCode]);
 
         // Jika berhasil melakukan hapus

@@ -15,7 +15,7 @@
 <body class="auth">
     <!-- SIGN UP -->
     <main class="auth__main">
-      <div class="auth__bg"></div>
+      <div class="auth__bg" style="background-image: url('source/auth/img/welcome-to-animo.png');"></div>
       <div class="auth__card">
         <img src="source/auth/pictures/logo.png" alt="">
         <div class="text-center">

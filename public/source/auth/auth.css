@@ -1,339 +1,113 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%; //1 rem = 10px; 10px/16px = 62.5%
+  // 1 rem pada css kita ialah 10px bukan 16px, tujuannya karena lebih mudah bila dibagi 10
+
+  @include device(tab-land) {
+    // width < 1200?
+    font-size: 56.25%; //1 rem = 9px, 9/16 = 50%
+  }
+
+  @include device(tab-port) {
+    // width < 900?
+    font-size: 50%; //1 rem = 8px, 8/16 = 50%
+  }
+
+  @include device(big-desktop) {
+    font-size: 75%; //1rem = 12, 12/16
+  }
+}
+
+body {
+  box-sizing: border-box;
+
+  @include device(tab-port) {
+    padding: 0;
+  }
+}
+
+::selection {
+  background-color: $color-gamboge;
+  color: $color-white;
+}
 .auth {
   display: -webkit-box;
   display: -ms-flexbox;
+  display: -webkit-flex;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  justify-content: center;
+  align-items: center;
   min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.6rem;
 }
-
 .auth__main {
   position: relative;
-  height: -webkit-max-content;
-  height: -moz-max-content;
   height: max-content;
   width: 122rem;
   padding: 5vh 0;
 }
-
 @media only screen and (min-width: 112.5em) {
   .auth__main {
     width: 150rem;
   }
 }
-
-.auth__main .auth {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  min-height: 100vh;
-}
-
-.auth__main .auth__main {
-  position: relative;
-  height: -webkit-max-content;
-  height: -moz-max-content;
-  height: max-content;
-  width: 122rem;
-  padding: 5vh 0;
-}
-
-@media only screen and (min-width: 112.5em) {
-  .auth__main .auth__main {
-    width: 150rem;
-  }
-}
-
-@media only screen and (max-width: 75em) {
-  .auth__main .auth__main {
-    width: 120rem;
-  }
-}
-
-@media only screen and (max-width: 56.25em) {
-  .auth__main .auth__main {
-    width: 95%;
-  }
-}
-
-@media only screen and (max-width: 37.5em) {
-  .auth__main .auth__main {
-    padding: 0;
-    width: 100%;
-  }
-}
-
-.auth__main .auth__bg {
-  position: absolute;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url("pictures/welcome-to-animo.png");
-  background-position: center;
-  z-index: 0;
-  top: 50%;
-  left: 40%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  width: 90rem;
-  height: 120vh;
-}
-
-@media only screen and (max-width: 75em) {
-  .auth__main .auth__bg {
-    width: 70vw;
-    height: 70vw;
-  }
-}
-
-@media only screen and (max-width: 56.25em) {
-  .auth__main .auth__bg {
-    background-size: 95%;
-    left: 35%;
-  }
-}
-
-@media only screen and (max-width: 37.5em) {
-  .auth__main .auth__bg {
-    display: none;
-    background-image: none;
-  }
-}
-
-.auth__main .auth__card {
-  background-color: #e5e5e5;
-  border-radius: 5.5rem;
-  text-align: center;
-  padding-bottom: 4rem;
-  z-index: 10;
-  position: relative;
-  width: 46rem;
-  margin-right: 0;
-  margin-left: auto;
-}
-
-.auth__main .auth__card h3 {
-  font-weight: 600;
-  font-size: 4.2rem;
-}
-
-@media only screen and (min-width: 112.5em) {
-  .auth__main .auth__card h3 {
-    font-size: 4.8rem;
-  }
-}
-
-@media only screen and (max-width: 75em) {
-  .auth__main .auth__card h3 {
-    font-size: 4.6rem;
-  }
-}
-
-@media only screen and (max-width: 56.25em) {
-  .auth__main .auth__card h3 {
-    font-size: 4.2rem;
-  }
-}
-
-@media only screen and (max-width: 37.5em) {
-  .auth__main .auth__card h3 {
-    font-size: 3.6rem;
-  }
-}
-
-.auth__main .auth__card label {
-  text-align: left;
-  margin-bottom: 1.2rem;
-  color: rgba(0, 0, 0, 0.7);
-  font-size: 1.8rem;
-}
-
-@media only screen and (max-width: 75em) {
-  .auth__main .auth__card label {
-    font-size: 1.9rem;
-  }
-}
-
-@media only screen and (max-width: 37.5em) {
-  .auth__main .auth__card label {
-    font-size: 2rem;
-  }
-}
-
-.auth__main .auth__card input {
-  font-family: "Poppins", sans-serif;
-  outline: none;
-  border-radius: 10px;
-  background-color: transparent;
-  border: 1px solid #c4c4c4;
-  color: rgba(0, 0, 0, 0.7);
-  font-size: 2rem;
-  font-weight: 400;
-  padding: 0.8rem 1.8rem;
-  width: 100%;
-  margin-bottom: 2rem;
-}
-
-@media only screen and (min-width: 112.5em) {
-  .auth__main .auth__card input {
-    font-size: 2.4rem;
-  }
-}
-
-@media only screen and (max-width: 75em) {
-  .auth__main .auth__card input {
-    margin-bottom: 2.4rem;
-  }
-}
-
-@media only screen and (max-width: 37.5em) {
-  .auth__main .auth__card input {
-    padding: 1.6rem 2.2rem;
-    margin-bottom: 2rem;
-    width: 100%;
-  }
-}
-
-.auth__main .auth__card .button {
-  font-family: Poppins;
-  font-weight: 600;
-  font-size: 2.4rem;
-  padding: 0.8rem;
-  border-radius: 2rem;
-  width: 21rem;
-  color: white;
-  outline: none;
-  border: none;
-  background-color: #732002;
-  text-decoration: none;
-  margin: 2rem auto;
-  cursor: pointer;
-}
-
-@media only screen and (min-width: 112.5em) {
-  .auth__main .auth__card {
-    width: 50rem;
-  }
-}
-
-@media only screen and (max-width: 75em) {
-  .auth__main .auth__card {
-    width: 48rem;
-  }
-}
-
-@media only screen and (max-width: 37.5em) {
-  .auth__main .auth__card {
-    border-radius: 4.4rem;
-    margin: 3rem auto;
-    width: 95vw;
-    max-width: 50rem;
-    right: 0;
-    top: 0;
-    -webkit-transform: translateY(0);
-    -moz-transform: translateY(0);
-  }
-}
-
-.auth__main .auth__form {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  padding: 0 4.4rem;
-  margin-top: 5rem;
-}
-
-@media only screen and (max-width: 75em) {
-  .auth__main .auth__form {
-    margin-top: 4rem;
-  }
-}
-
-@media only screen and (max-width: 37.5em) {
-  .auth__main .auth__form {
-    padding: 0 3rem;
-    margin-top: 2.6rem;
-  }
-}
-
-.auth__main .auth #error {
-  color: #cc0000;
-  font-size: 1.6rem;
-  text-align: center;
-  width: 85%;
-  margin: 0 auto;
-  white-space: normal;
-  word-wrap: break-word;
-}
-
 @media only screen and (max-width: 75em) {
   .auth__main {
     width: 120rem;
   }
 }
-
 @media only screen and (max-width: 56.25em) {
   .auth__main {
     width: 95%;
   }
 }
-
 @media only screen and (max-width: 37.5em) {
   .auth__main {
     padding: 0;
     width: 100%;
   }
 }
-
 .auth__bg {
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url("pictures/welcome-to-animo.png");
+  background-image: url("./welcome-to-animo.png");
   background-position: center;
   z-index: 0;
   top: 50%;
   left: 40%;
   -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   width: 90rem;
   height: 120vh;
 }
-
 @media only screen and (max-width: 75em) {
   .auth__bg {
     width: 70vw;
     height: 70vw;
   }
 }
-
 @media only screen and (max-width: 56.25em) {
   .auth__bg {
     background-size: 95%;
     left: 35%;
   }
 }
-
 @media only screen and (max-width: 37.5em) {
   .auth__bg {
     display: none;
     background-image: none;
   }
 }
-
 .auth__card {
   background-color: #e5e5e5;
   border-radius: 5.5rem;
@@ -345,55 +119,46 @@
   margin-right: 0;
   margin-left: auto;
 }
-
 .auth__card h3 {
   font-weight: 600;
   font-size: 4.2rem;
 }
-
 @media only screen and (min-width: 112.5em) {
   .auth__card h3 {
     font-size: 4.8rem;
   }
 }
-
 @media only screen and (max-width: 75em) {
   .auth__card h3 {
     font-size: 4.6rem;
   }
 }
-
 @media only screen and (max-width: 56.25em) {
   .auth__card h3 {
     font-size: 4.2rem;
   }
 }
-
 @media only screen and (max-width: 37.5em) {
   .auth__card h3 {
     font-size: 3.6rem;
   }
 }
-
 .auth__card label {
   text-align: left;
   margin-bottom: 1.2rem;
   color: rgba(0, 0, 0, 0.7);
   font-size: 1.8rem;
 }
-
 @media only screen and (max-width: 75em) {
   .auth__card label {
     font-size: 1.9rem;
   }
 }
-
 @media only screen and (max-width: 37.5em) {
   .auth__card label {
     font-size: 2rem;
   }
 }
-
 .auth__card input {
   font-family: "Poppins", sans-serif;
   outline: none;
@@ -407,19 +172,16 @@
   width: 100%;
   margin-bottom: 2rem;
 }
-
 @media only screen and (min-width: 112.5em) {
   .auth__card input {
     font-size: 2.4rem;
   }
 }
-
 @media only screen and (max-width: 75em) {
   .auth__card input {
     margin-bottom: 2.4rem;
   }
 }
-
 @media only screen and (max-width: 37.5em) {
   .auth__card input {
     padding: 1.6rem 2.2rem;
@@ -427,7 +189,6 @@
     width: 100%;
   }
 }
-
 .auth__card .button {
   font-family: Poppins;
   font-weight: 600;
@@ -443,19 +204,16 @@
   margin: 2rem auto;
   cursor: pointer;
 }
-
 @media only screen and (min-width: 112.5em) {
   .auth__card {
     width: 50rem;
   }
 }
-
 @media only screen and (max-width: 75em) {
   .auth__card {
     width: 48rem;
   }
 }
-
 @media only screen and (max-width: 37.5em) {
   .auth__card {
     border-radius: 4.4rem;
@@ -468,32 +226,23 @@
     -moz-transform: translateY(0);
   }
 }
-
 .auth__form {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   padding: 0 4.4rem;
   margin-top: 5rem;
 }
-
 @media only screen and (max-width: 75em) {
   .auth__form {
     margin-top: 4rem;
   }
 }
-
 @media only screen and (max-width: 37.5em) {
   .auth__form {
     padding: 0 3rem;
     margin-top: 2.6rem;
   }
 }
-
 .auth #error {
   color: #cc0000;
   font-size: 1.6rem;
@@ -520,8 +269,6 @@
   position: relative;
   position: fixed;
   top: 5vh;
-  width: -webkit-max-content;
-  width: -moz-max-content;
   width: max-content;
   margin: 0 auto;
   background: #fff;
@@ -533,22 +280,14 @@
   opacity: 0;
   visibility: hidden;
 }
-
 .dialog__box.shown {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   row-gap: 1rem;
 }
-
 .dialog__box ol {
   padding-left: 1.4rem;
 }
-
 .dialog__box li:hover {
   background: transparent;
 }
@@ -560,13 +299,11 @@
   /* OLD - iOS 6-, Safari 3.1-6, BB7 */
   display: -ms-flexbox;
   /* TWEENER - IE 10 */
+  display: -webkit-flex;
   /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
   display: flex;
   /* NEW, Spec - Firefox, Chrome, Opera */
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
   row-gap: 2rem;
 }
 
@@ -576,4 +313,3 @@
   right: 1rem;
   cursor: pointer;
 }
-/*# sourceMappingURL=auth.css.map */

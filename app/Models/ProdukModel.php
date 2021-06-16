@@ -73,7 +73,7 @@ class ProdukModel extends BaseModel
 
         // Get result
         if ($column == false && $category != '') {
-            $result = $this->where('nama_kategori', $category)->findAll();
+            $result = $this->where('idKategori', $category)->findAll();
         } elseif ($column == false) {
             $result = $this->findAll();
         } elseif (gettype($column) != 'array') {

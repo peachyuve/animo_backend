@@ -22,7 +22,7 @@
   <body>
     <nav class="navbar py-4 navbar-expand navbar-dark">
       <div class="container">
-        <a href="./dashboard.html">
+        <a href="./">
         <img
           class="navbar__brand"
           height="452"
@@ -32,7 +32,7 @@
         />
         
         </a>
-        <a href="/dashboard" class="navbar__text">Kembali</a>
+        <a href="/" class="navbar__text">Kembali</a>
     </nav>
     
     <div class="container">

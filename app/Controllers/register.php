@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Controllers;
+<?php namespace App\Controllers;
 
 use CodeIgniter\Controller;
 use App\Models\userModel;
@@ -12,10 +10,25 @@ class Register extends Controller
     {
         //include helper form
         helper(['form']);
-        return view('register');
+        
+        // validate user
+        $user = new \App\Models\userModel();
+        $user = $user->getData(['token' => $this->request->getGet('token')]);
+        
+        if(!$user){
+            return redirect()->to('https://automateall.id/detail?id=1');         
+        }
+        
+        if($user['kota'] && $user['namaBisnis']){
+            return redirect()->to('/login');
+        }   
+        
+        $data = ['token' => $this->request->getGet('token')];
+        
+        return view('register', $data);
     }
 
-    public function save()
+    public function save($token)
     {
         //include helper form
         helper(['form']);
@@ -29,24 +42,13 @@ class Register extends Controller
         if ($this->validate($rules)) {
             $model = new usermodel();
 
-            // start production
-            $user = [
-                'nama' => 'irfan',
-                'email' => 'irfan@gmail.com',
-                'password' => base64_encode(password_hash('irfan123', PASSWORD_ARGON2_DEFAULT_THREADS)),
-                'token' => rand(0,255),
-            ];
-            $token = ['token' => $user['token']];
-            $model->insertData($user);
-            // end production
-
             $data = [
                 'namaBisnis' => $this->request->getVar('business'),
                 'kota'   => $this->request->getVar('city')
             ];
-            $model->updateData($data, $token);
+            $model->updateData($data, ['token' => $token]);
             
-            return redirect()->to(base_url('/login'));
+            return redirect()->to(base_url('login/auth?token='.$token));
         } else {
             session()->setFlashdata('inputs', $this->request->getPost());
             session()->setFlashdata('errors', $this->validator);
