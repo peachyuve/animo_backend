@@ -11,13 +11,13 @@ class userAuth implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         $unrestricted = [
-            'login*', 'register*', 'logout*'
+            'login*', 'register*'
         ];
         $isUnrestricted = in_array( 1, array_map( function($a){return url_is($a);}, $unrestricted ) );
 
         if (session()->get('logged_in')) {
             if ($isUnrestricted) {
-                return redirect()->to('/dashboard');
+                return redirect()->to('/');
             }
         }else {
             if (!($isUnrestricted)) {
