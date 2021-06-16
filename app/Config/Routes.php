@@ -37,13 +37,15 @@ $routes->post('/register/save', 'Register::save');
 
 // login
 $routes->get('/login', 'login');
+$routes->post('/login', 'login::auth');
 $routes->get('/logout', 'login::logout');
 
 // dashboard
-$routes->get('/dashboard', 'Dashboard');
+$routes->get('/', 'Dashboard');
 
 // produk
 $routes->get('/produk', 'Produk');
+$routes->post('/produk/kategori', 'Produk::tambahKategori');
 
 // bahan
 $routes->get('/bahan', 'bahan');
