@@ -3,7 +3,7 @@
     <h1 id="header-title" class="header__title"></h1>
     <h4 id="header-date" class="header__date">
       <!-- date injected from js -->
-      <span class="header__day">Kamis, </span>10 Juni 2021
+      <span class="header__day"><?= date('D') ?>, </span><?= date('d M Y') ?>
     </h4>
   </div>
   <div class="col-2 col-sm-6">
