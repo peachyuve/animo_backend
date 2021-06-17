@@ -64,8 +64,9 @@ $routes->get('/resep/input', 'Resep::insert');
 
 // pesanan
 $routes->get('/pesanan', 'Pesanan');
-$routes->get('/pesanan/input', 'Pesanan::insert');
 $routes->post('/pesanan/input', 'Pesanan::proses_input');
+$routes->post('/pesanan/delete/(:segment)', 'Pesanan::proses_delete/$1');
+$routes->post('/pesanan/edit/(:segment)', 'Pesanan::proses_edit/$1');
 
 
 /**

@@ -7,7 +7,10 @@ class PesananModel extends BaseModel
     protected $table      = 'pesanan';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields= ['id', 'uniqueCode', 'idProduk', 'nama', 'jumlah', 'tglPemesanan', 'statusPembayaran', 'statusPemesanan', 'createDate', 'updateDate', 'deleteDate'];
+    protected $allowedFields = ['id', 'uniqueCode', 'idProduk', 'namaPemesan', 'jumlah', 'tglPemesanan', 'statusPembayaran', 'statusPemesanan', 'createDate', 'updateDate', 'deleteDate'];
+
+    protected $useSoftDeletes = true;
+    protected $deletedField  = 'deleteDate';
 
     public function getPesanan($idUser, $column=false, $orderBy=false, $typeOrder = 'desc', $isIncludeDelete = false)
     {
@@ -27,21 +30,26 @@ class PesananModel extends BaseModel
         }elseif(count($column) == 1) {
             $result = $this->findColumn($column[0]);
         }else{
-            $resultArr = [];
-            $result = $this->findAll();
-            for ($i=0; $i < count($column); $i++) { 
-                for ($j=0; $j < count($result); $j++) { 
-                    $resultArr[$j][$column[$i]] = $result[$j][$column[$i]];
+            foreach ($column as $keyCol => $valCol) {
+                if (strpos($valCol, '.')) {
+                    $explodedValCol = explode('.', $valCol);
+                    if ($explodedValCol[0] != $this->table) {
+                        $this->select($valCol.' as '.$explodedValCol[0].'_'.$explodedValCol[1]);
+                    }else {
+                        $this->select($valCol);
+                    }
+                }else {
+                    $this->select($valCol);
                 }
             }
-            $result = $resultArr;
+            $result = $this->findAll();
         }
 
         // Output result
         if (!$result) {
             return false;
         }elseif (count($result) == 1) {
-            return $result[0];
+            return $result;
         }else {
             return $result;
         }

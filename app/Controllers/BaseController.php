@@ -69,23 +69,6 @@ class BaseController extends Controller
 				$newString .= $this->sensitiveStringToSave($valString);
 			}
 		} 
-		// elseif (count($string) == count($string, COUNT_RECURSIVE)) {
-		// 	foreach ($string as $keyString => $valString) {
-		// 		$tempSring = str_split($valString);
-		// 		foreach ($tempSring as $keyTempSring => $valTempSring) {
-		// 			$newString[$keyString] .= $this->sensitiveStringToSave($valString);
-		// 		}
-		// 	}
-		// } else {
-		// 	foreach ($string as $keyString => $valString) {
-		// 		foreach ($valString as $keyValString => $valValString) {
-		// 			$tempstring = str_split($valValString);
-		// 			foreach ($tempstring as $keyTempstring => $valTempstring) {
-		// 				$newString[$keyString][$keyValString] .= $this->sensitiveStringToSave($valString);
-		// 			}
-		// 		}
-		// 	}
-		// }
 
 		return $newString;
 	}
@@ -101,5 +84,11 @@ class BaseController extends Controller
 				return $string;
 				break;
 		}
+	}
+
+	public function idToUniqueCode(&$val)
+	{
+		$val['id'] = $val['uniqueCode'];
+		unset($val['uniqueCode']);
 	}
 }
