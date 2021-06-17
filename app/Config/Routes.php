@@ -49,9 +49,10 @@ $routes->post('/produk/kategori', 'Produk::tambahKategori');
 
 // bahan
 $routes->get('/bahan', 'bahan');
-$routes->get('/bahan/input', 'bahan::insertDataBahan');
-$routes->get('/bahan/edit/(:segment)', 'bahan::editDataBahan/$1');
-$routes->get('/bahan/delete/(:segment)', 'bahan::proses_deleteDataBahan/$1');
+$routes->post('/bahan/input', 'bahan::proses_insertDataBahan');
+$routes->post('/bahan/edit/(:segment)', 'bahan::proses_editDataBahan/$1');
+$routes->post('/bahan/delete/(:segment)', 'bahan::proses_deleteDataBahan/$1');
+$routes->post('/bahan/kategori', 'bahan::proses_tambahKategoriBahan');
 
 // stok bahan
 $routes->get('/stokbahan', 'stokbahan');

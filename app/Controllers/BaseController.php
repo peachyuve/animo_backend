@@ -37,7 +37,6 @@ class BaseController extends Controller
 	{
 		// Do Not Edit This Line
 		parent::initController($request, $response, $logger);
-		session()->set(['id' => 'q3S67']);
 
 		// model
 		$this->user = new \App\Models\userModel();
@@ -46,9 +45,6 @@ class BaseController extends Controller
 		$this->porsi = new \App\Models\PorsiModel();
 		$this->resep = new \App\Models\ResepModel();
 		$this->pesanan = new \App\Models\PesananModel();
-
-		// print prety json
-		header('Content-type: text/javascript');
 	}
 
 	public function sendEmail($fromEmail, $from, $to, $subject=null, $message=null){
@@ -60,5 +56,50 @@ class BaseController extends Controller
 		$this->email->setMessage($message);
     
  		return $this->email->send();
+	}
+
+	public function convertToSafeString($string)
+	{
+		$newString = [];
+
+		if (gettype($string) == 'string') {
+			$string = str_split($string);
+			$newString = '';
+			foreach ($string as $keyString => $valString) {
+				$newString .= $this->sensitiveStringToSave($valString);
+			}
+		} 
+		// elseif (count($string) == count($string, COUNT_RECURSIVE)) {
+		// 	foreach ($string as $keyString => $valString) {
+		// 		$tempSring = str_split($valString);
+		// 		foreach ($tempSring as $keyTempSring => $valTempSring) {
+		// 			$newString[$keyString] .= $this->sensitiveStringToSave($valString);
+		// 		}
+		// 	}
+		// } else {
+		// 	foreach ($string as $keyString => $valString) {
+		// 		foreach ($valString as $keyValString => $valValString) {
+		// 			$tempstring = str_split($valValString);
+		// 			foreach ($tempstring as $keyTempstring => $valTempstring) {
+		// 				$newString[$keyString][$keyValString] .= $this->sensitiveStringToSave($valString);
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		return $newString;
+	}
+
+	private function sensitiveStringToSave($string)
+	{
+		switch ($string) {
+			case "'":
+				return "\'";
+				break;
+
+			default:
+				return $string;
+				break;
+		}
 	}
 }

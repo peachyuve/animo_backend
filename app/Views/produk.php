@@ -57,10 +57,11 @@
                 </li>
               </ul>
             </div>
+            <h2 class="list__title" style="margin-top: 3.8rem;">Pilih Produk</h2>
             <ul class="products">
               <!-- pindahkan class "products__item--selected" ke item atau produk yang sedang dipilih oleh user, agar nanti item terpilih ada backgroundnya di UI -->
               <?php if(!$produk){ ?>
-                <h4>
+                <h4 class="list__title" style="margin-top: 3.8rem;">
                   Belum ada produk
                 </h4>
               <?php } ?>
