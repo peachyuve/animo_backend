@@ -1,2 +1,0 @@
-document.querySelector("[data-link^=stok_bahan]").classList.add("sidebar__link--active"),document.getElementById("header-title").textContent="Stok Bahan";
-//# sourceMappingURL=stokBahan.7f720cc1.js.map

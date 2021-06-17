@@ -56,6 +56,7 @@ $routes->post('/bahan/kategori', 'bahan::proses_tambahKategoriBahan');
 
 // stok bahan
 $routes->get('/stokbahan', 'stokbahan');
+$routes->post('/stokbahan/edit/(:segment)', 'stokbahan::update/$1');
 
 // resep
 $routes->get('/resep/(:segment)', 'Resep/$1');

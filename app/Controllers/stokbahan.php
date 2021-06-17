@@ -5,14 +5,10 @@ namespace App\Controllers;
 use CodeIgniter\Controller;
 use App\Models\stokbahanmodel;
 
-
-class stokbahan extends Controller
+class stokbahan extends BaseController
 {
     public function __construct()
     {
-        // // Mendeklarasikan class ProductModel menggunakan $this->product
-        // $this->product = new stokbahanmodel();
-
         // Mengambil idUser
         $this->idUser = new \App\Models\userModel();
         $this->idUser = $this->idUser->getData(['uniqueCode' => session()->get('id')], 'id');        
@@ -20,45 +16,82 @@ class stokbahan extends Controller
 
     public function index()
     {
+        // mengambil bahan terpilih
+        $idBahan = $this->request->getVar('bahan');
+        $selectedBahan = $this->bahan->getData(['uniqueCode' => $idBahan, 'idUser' => $this->idUser], [
+            'nama'
+        ]);
+
+        if (!$selectedBahan) {
+            $idBahan = 'all';
+            $selectedBahan = 'Semua Bahan';
+        }
+
+        // mengambil data stok
         $model = new stokbahanmodel();
-        $namaBahanCari = $this->request->getVar('nama');
-        $data['stok'] = ($namaBahanCari && $namaBahanCari != 'Semua')?
-            $model->modelcari($namaBahanCari)
+        $stokArr = ($idBahan && $idBahan != 'all')?
+            $model->getStok($idBahan, $this->idUser)
             :
-            $model->getBahan(0, $this->idUser)
+            $model->getStok(0, $this->idUser)
         ;
 
-        echo view('stokbahan/stokbahan', $data);
-    }
+        // mengambil data bahan
+        $bahanArr = $this->bahan->getData(['idUser' => $this->idUser], [
+            'uniqueCode', 'nama'
+        ]);
+        array_walk($bahanArr, array($this, 'idToUniqueCode'));
 
-    public function edit($id)
-    {
-        $model = new stokbahanmodel();
-        // Memanggil function getProduct($id) dengan parameter $id di dalam ProductModel dan menampungnya di variabel array product
-        $data['stok'] = $model->getBahan($id);
-        // Mengirim data ke dalam view
-        return view('stokbahan/edit', $data);
+        $data = [
+            'stok' => $stokArr,
+            'bahan' => $bahanArr,
+            'selectedBahan' => $selectedBahan,
+        ];
+
+        echo view('stok_bahan', $data);
     }
 
     public function update($id)
     {
         $model = new stokbahanmodel();
+
+        // cek stok
+        $stok = $model->getData(['uniqueCode' => $id], [
+            'idBahan', 'tglUpdate', 'stokAwal', 'stokMasuk', 'stokKeluar', 'stokAkhir'
+        ]);
+        if (!$stok) {
+            session()->setFlashdata('message', 'Error');
+            return redirect()->to('/stokbahan');
+        }
+
+        print('<pre>'.print_r($stok,true).'</pre>');
+
         // Mengambil value dari form dengan method POST
-        $updateDate = $this->request->getPost('updateDate');
-        $stokAwal = $this->request->getPost('stokAwal');
-        $stokMasuk = $this->request->getPost('stokMasuk');
-        $stokKeluar = $this->request->getPost('stokKeluar');
-        $stokAkhir = $stokAwal + $stokMasuk - $stokKeluar;
+        $jenisStok = $this->request->getPost('jenisStok');
+        $updateDate = $this->request->getPost('date');
+        $jumlah = $this->request->getPost('jumlah');
 
         // Membuat array collection yang disiapkan untuk insert ke table
-        $data = [
-            'idBahan' => $model->getBahan($id)[0]['idBahan'],
-            'tglUpdate' => $updateDate,
-            'stokAwal' => $stokAwal,
-            'stokMasuk' => $stokMasuk,
-            'stokKeluar' => $stokKeluar,
-            'stokAkhir' => $stokAkhir
-        ];
+        $data = $stok;
+        $data['tglUpdate'] = $updateDate;
+
+        // Memilih jenis stok yang diupdate
+        switch ($jenisStok) {
+            case 'awal':
+                $data['stokAwal'] = $jumlah;
+                $data['stokAkhir'] = $jumlah + $stok['stokMasuk'] - $stok['stokKeluar'];
+                break;
+            case 'masuk':
+                $data['stokMasuk'] = $jumlah;
+                $data['stokAkhir'] = $stok['stokAwal'] + $jumlah - $stok['stokKeluar'];
+                break;
+            case 'keluar':
+                $data['stokKeluar'] = $jumlah;
+                $data['stokAkhir'] = $stok['stokAwal'] + $stok['stokMasuk'] - $jumlah;
+                break;
+            default:
+                # code...
+                break;
+        }
 
         /* 
         Membuat variabel ubah yang isinya merupakan memanggil function 

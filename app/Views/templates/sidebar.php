@@ -26,7 +26,7 @@
     </a>
   </li>
   <li class="sidebar__item">
-    <a class="sidebar__link" data-link="stok_bahan" href="/stok_bahan">
+    <a class="sidebar__link" data-link="stok_bahan" href="/stokbahan">
       <img src="source/images/cart.svg" alt="Cart" />
       <p>Stok Bahan</p>
     </a>
