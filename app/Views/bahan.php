@@ -365,8 +365,11 @@
             let response = await fetch("/bahan/delete/" + subId, {
               method: "POST",
             });
-            if (response.ok) {
+            if (response.ok) {  
               Swal.fire("Terhapus", "Sub Bahan berhasil terhapus", "success");
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
             } else {
               Swal.fire({
                 icon: "error",
