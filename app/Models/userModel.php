@@ -8,4 +8,7 @@ class userModel extends BaseModel
     protected $primaryKey = 'id'; // primary key tabel
     protected $returnType = 'array'; 
     protected $allowedFields= ['id','uniqueCode','nama','email','token','password','kota','deleteDate']; // kolom yang bisa dilakukan input, update, delete
+    
+    protected $useSoftDeletes = true;
+    protected $deletedField  = 'deleteDate';
 }

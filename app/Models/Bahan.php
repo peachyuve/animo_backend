@@ -9,6 +9,7 @@ class Bahan extends BaseModel
     protected $returnType = 'array';
     protected $allowedFields= ['id','uniqueCode','idUser','nama','idKategori','satuan','subBahan','merk', 'suplier','linkSuplier','createDate','updateDate','deleteDate'];
 
+    protected $useSoftDeletes = true;
     protected $deletedField  = 'deleteDate';
 
     public function getBahanByProduk($id)

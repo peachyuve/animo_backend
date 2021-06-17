@@ -9,6 +9,9 @@ class ResepModel extends BaseModel
     protected $returnType = 'array'; 
     protected $allowedFields= ['id','uniqueCode','idPorsi','idBahan','jumBahan','hargaBahan','hargaPerSatuan','ukuranResep','hargaTotal']; // kolom yang bisa dilakukan input, update, delete
 
+    protected $useSoftDeletes = true;
+    protected $deletedField  = 'deleteDate';
+
     public function getResep($idUser, $idProduk = null, $kategoriBahan = null, $column=false, $orderBy=false, $typeOrder = 'desc', $isIncludeDelete = false)
     {
         // Order By

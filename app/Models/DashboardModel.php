@@ -11,6 +11,8 @@ class DashboardModel extends Model
         $builder = $this->db->table('Produk');
         $builder->select('*');
         $builder->join('Pesanan','Pesanan.idProduk = Produk.id');
+
+        $builder->where('Pesanan.deleteDate', null);
         
         (!$orderBy) ? null : $this->orderBy($orderBy, $typeOrder);
         
