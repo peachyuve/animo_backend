@@ -6,7 +6,7 @@ use App\Models\KategoriModel;
 use App\Models\userModel;
 use App\Models\Bahan;
 
-class Produk extends Controller
+class Produk extends BaseController
 {
 
     public function __construct()
@@ -14,6 +14,10 @@ class Produk extends Controller
         $this->produk = new ProdukModel();
         $this->kategori = new KategoriModel();
         $this->bahan = new Bahan();
+        
+        // Mengambil idUser
+        $this->User = new \App\Models\userModel();
+        $this->idUser = $this->User->getData(['uniqueCode' => session()->get('id')], 'id');        
     }
 
     public function index()
@@ -22,38 +26,45 @@ class Produk extends Controller
         $produk = htmlspecialchars($this->request->getVar('produk'));
 
         // handle kategori data
-        $kategoriList = $this->kategori->getData(0, ['id', 'nama']);
+        $kategoriList = $this->kategori->getData(['idUser' => $this->idUser], ['uniqueCode', 'nama']);
         if (!$kategoriList) {
             $data= [
                 'produk' => [],
                 'kategori' => [],
-                'selectedKategori' => '',
+                'selectedKategori' => [
+                    'id' => null,
+                    'nama' => 'Pilih Item',
+                ],
                 'selectedProduk' => []
             ];
 
             return view('produk', $data);
         }
         $kategoriList = (isset($kategoriList[0]))?$kategoriList:[$kategoriList];
+        array_walk($kategoriList, array($this, "idToUniqueCode"));
 
         // membuat kategori terpilih
-        $selectedKategori = (in_array($kategori, $kategoriList))?$kategori:$kategoriList[0];
+        $selectedKategori = $this->kategori->getData(['uniqueCode' => $kategori], ['uniqueCode', 'nama']);
+        if (!$selectedKategori) {
+            $selectedKategori = [
+                'uniqueCode' => null,
+                'nama' => 'Pilih Item',
+            ];
+        }
+        $selectedKategori = [$selectedKategori];
+        array_walk($selectedKategori, array($this, "idToUniqueCode"));
+        $selectedKategori = $selectedKategori[0];
 
         // handle produk data
-        $produkList = $this->produk->getProduk();
+        $produkList = $this->produk->getProduk(
+            $data = ['idUser' => $this->idUser],
+            $column = 0,
+            $orderBy = 0,
+            $typeOrder = 'desc', 
+            $selectedKategori['id']
+        );
         if ($produkList) {
-
-            $produkList = $this->produk->getProduk(
-                $data = 0,
-                $column = 0,
-                $orderBy = 0,
-                $typeOrder = 'desc', 
-                $selectedKategori['id']
-            );
-    
-            // handle harga dan id
-            foreach ($produkList as $keyProdukList => $valProdukList) {
-                $produkList[$keyProdukList]['id'] = $valProdukList['uniqueCode'];
-            }
+            array_walk($produkList, array($this, "idToUniqueCode"));
 
             // cari produk yang di pilih
             foreach ($produkList as $keyProduk => $valProduk) {
@@ -77,7 +88,7 @@ class Produk extends Controller
             $selectedProduk['img'] = str_replace(' ', '%20', $selectedProduk['img']);
 
             // ambil data bahan
-            $selectedBahan = $this->bahan->getBahanByProduk($selectedProduk['id']);
+            $selectedBahan = $this->bahan->getBahanByProduk($selectedProduk['id'], $this->idUser);
         }else {
             $produkList = [];
             $selectedProduk = [];
@@ -88,7 +99,7 @@ class Produk extends Controller
             'kategori' => $kategoriList,
             'selectedKategori' => $selectedKategori,
             'selectedProduk' => $selectedProduk,
-            'selectedBahan' => ($selectedBahan)?$selectedBahan:[],
+            'selectedBahan' => (isset($selectedBahan) AND $selectedBahan)?$selectedBahan:[],
         ];
 
         return view('produk', $data);
@@ -103,13 +114,17 @@ class Produk extends Controller
         $idUser = $idUser->getData(['uniqueCode' => session()->get('id')], 'id');
         
         $idKategori = $this->kategori->insertData([
-            'kategori' => $kategori,
-            'idUser'   => $idUser,
+            'nama'   => $kategori,
+            'idUser' => $idUser,
         ]);
 
-        if ($idKategori) {
-            return redirect()->to('/produk');
+        if (!$idKategori) {
+            session()->setFlashdata('message', 'Error');
+        }else {
+            // mendapatkan uniqueCode
+            $idKategori = $this->kategori->getData(['id' => $idKategori], ['uniqueCode']);
         }
+        return redirect()->to('/produk?kategori='.$idKategori);
     }
 
 
@@ -141,7 +156,7 @@ class Produk extends Controller
             'ukuran' => $size,
             'satuan' => $satuan,
             'harga' => $price,
-            'idKategori' => $category,
+            'idKategori' => $this->kategori->getData(['uniqueCode' => $category], ['id']),
             'img' => $imgPath.$imageName,
         ];
 

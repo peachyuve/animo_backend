@@ -13,7 +13,7 @@ class Dashboard extends BaseController
 		$idUser = new userModel();
 		$idUser = $idUser->getData(['uniqueCode' => session()->get('id')], 'id');
 
-		$data['pesanan'] = $Dashboard->GetPesanan(['uniqueCode','nama', 'harga','ukuran', 'jumlah','img']);
+		$data['pesanan'] = $Dashboard->GetPesanan(['uniqueCode','nama', 'harga','ukuran', 'jumlah','img'], $idUser);
 		$data['stock'] = $Dashboard->StockHabis(['uniqueCode', 'nama','satuan', 'stokAkhir'], $idUser);
 
 		// handle data pesanan

@@ -230,7 +230,8 @@ class BaseModel extends Model
         $this->db->table($this->table)->update($data, $where);
 
         // check if updated data excist
-        if( $this->where($data)->first() ) {
+        $id = $this->query('SELECT * FROM '.$this->table.' WHERE deleteDate is NOT NULL AND '. array_key_first($where) .' = "'. $where[array_key_first($where)] .'"')->getResultArray();
+        if( $id ) {
             return true;
         }else{
             return false;

@@ -12,7 +12,7 @@ class Bahan extends BaseModel
     protected $useSoftDeletes = true;
     protected $deletedField  = 'deleteDate';
 
-    public function getBahanByProduk($id)
+    public function getBahanByProduk($id, $idUser)
     {
         $this->select('bahan.*');
         $this->select('resep.ukuranResep');
@@ -25,6 +25,7 @@ class Bahan extends BaseModel
 
         // where
         $this->where('produk.uniqueCode', $id);
+        $this->where('bahan.idUser', $idUser);
 
         if($result = $this->findAll()){
             return $result;

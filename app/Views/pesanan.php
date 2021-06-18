@@ -60,7 +60,7 @@
                   <tr>
                     <!-- hapus "table__empty--false" jika ingin memunculkan teks di bawah -->
                     <td
-                      class="table__empty table__empty--false pt-5"
+                      class="table__empty <?= ($pesanan)?'table__empty--false':null ?> pt-5"
                       colspan="7"
                     >
                       Belum ada pesanan yang ditambahkan.

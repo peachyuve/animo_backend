@@ -42,9 +42,11 @@ class BaseController extends Controller
 		$this->user = new \App\Models\userModel();
 		$this->produk = new \App\Models\ProdukModel();
 		$this->bahan = new \App\Models\Bahan();
+		$this->stokBahan = new \App\Models\stokbahanmodel();
 		$this->porsi = new \App\Models\PorsiModel();
 		$this->resep = new \App\Models\ResepModel();
 		$this->pesanan = new \App\Models\PesananModel();
+		$this->kategoriBahan = new \App\Models\KategoriBahanModel();
 	}
 
 	public function sendEmail($fromEmail, $from, $to, $subject=null, $message=null){

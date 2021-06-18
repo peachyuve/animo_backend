@@ -5,11 +5,8 @@ namespace App\Controllers;
 class Bahan extends BaseController
 {
     public function __construct() {
-        $this->Bahan = new \App\Models\Bahan();
 		$this->porsi = new \App\Models\PorsiModel();
 		$this->resep = new \App\Models\ResepModel();
-        $this->Kategori = new \App\Models\KategoriBahanModel();
-		// $this->resep_detail = new \App\Models\Resepdetail();
 
         // Mengambil idUser
         $this->User = new \App\Models\userModel();
@@ -19,16 +16,18 @@ class Bahan extends BaseController
     public function index(){
         $requestedKategori = htmlspecialchars($this->request->getVar('kategori'));
 
-        $requestedKategori = $this->Kategori->getData(['uniqueCode' => $requestedKategori], ['id', 'uniqueCode', 'nama']);
+        $requestedKategori = $this->kategoriBahan->getData(['uniqueCode' => $requestedKategori], ['id', 'uniqueCode', 'nama']);
 
         // handle data kategori bahan
-        $kategoriList = $this->Kategori->getData(0, ['id', 'uniqueCode', 'nama']);
+        $kategoriList = $this->kategoriBahan->getData(['idUser'=>$this->idUser], ['id', 'uniqueCode', 'nama']);
         if (!$kategoriList) {
             $data= [
-                'produk' => [],
+                'bahan' => [],
                 'kategori' => [],
-                'selectedKategori' => '',
-                'selectedProduk' => []
+                'selectedKategori' => [
+                    'uniqueCode' => null, 
+                    'nama' => 'Pilih Kategori'
+                ],
             ];
 
             return view('bahan', $data);
@@ -36,10 +35,18 @@ class Bahan extends BaseController
         $kategoriList = (isset($kategoriList[0]))?$kategoriList:[$kategoriList];
         
         // membuat kategori terpilih
-        $selectedKategori = (in_array($requestedKategori, $kategoriList))?$requestedKategori:$kategoriList[0];
+        $selectedKategori = (in_array($requestedKategori, $kategoriList))?$requestedKategori:[
+                                                                                                'uniqueCode' => null, 
+                                                                                                'nama' => 'Pilih Kategori'
+                                                                                            ];
 
         // handle bahan data
-        $bahan = $this->Bahan->getData(['idUser' => $this->idUser, 'idKategori' => $selectedKategori['id']]);
+        if ($selectedKategori['uniqueCode']) {
+            $bahan = $this->bahan->getData(['idUser' => $this->idUser, 'idKategori' => $selectedKategori['id']]);
+        }else{
+            $bahan = $this->bahan->getData(['idUser' => $this->idUser]);
+        }
+
         if($bahan){
             if (count($bahan) == count($bahan, COUNT_RECURSIVE)) {
                 $bahan = [$bahan];
@@ -80,12 +87,8 @@ class Bahan extends BaseController
         return view('bahan', $data);
     }
 
-    public function insertDataBahan(){
-        return view('bahan/insertBahan');
-    }
-
     public function proses_insertDataBahan(){
-        $idKategori = $this->Kategori->getData(['uniqueCode' => $this->request->getPost('category')], ['id']);
+        $idKategori = $this->kategoriBahan->getData(['uniqueCode' => $this->request->getPost('category')], ['id']);
         
         // insert data bahan
         $data = [
@@ -99,32 +102,32 @@ class Bahan extends BaseController
             'linkSuplier' => $this->request->getPost('contact')
         ];
         print('<pre>'.print_r($data,true).'</pre>');
-        $cek = $this->Bahan->insertData($data);
+        $idInsertedBahan = $this->bahan->insertData($data);
 
-        if(!$cek){
+        if(!$idInsertedBahan){
             $this->session->set_flashdata('message', 'Error');
+        }else {
+            $data = [
+                'idBahan'       => $idInsertedBahan,
+                'tglUpdate'     => date('Y-m-d H:i:s'),
+                'stokAwal'      => 0,
+                'stokMasuk'     => 0,
+                'stokKeluar'    => 0,
+                'stokAkhir'     => 0,
+            ];
+            $idInsertedStok = $this->stokBahan->insertData($data);
+            if (!$idInsertedStok) {
+                $this->session->set_flashdata('message', 'Error');
+            }else {
+                $this->bahan->rollbackInsert($idInsertedBahan);
+            }
         }
         
         return redirect()->to(base_url('bahan'));
     }
 
-    public function editDataBahan($id){
-        $bahan = $this->Bahan->getData(['id' => $id]);
-        if($bahan){
-            // sementara
-            $bahan['uniqueCode'] = $bahan['id'];
-            // sementara
-        }
-
-        $data = [
-            'bahan' => $bahan,
-        ];
-
-        return view('bahan/editbahan',$data);
-    }
-
     public function proses_editDataBahan($uniqueCode){
-        $idKategori = $this->Kategori->getData(['uniqueCode' => $this->request->getPost('category')], ['id']);
+        $idKategori = $this->kategoriBahan->getData(['uniqueCode' => $this->request->getPost('category')], ['id']);
 
         // get request data
         $data = [
@@ -138,8 +141,8 @@ class Bahan extends BaseController
         ];
 
         // cek jika id ada
-        if ($this->Bahan->getData(['uniqueCode' => $uniqueCode])) {
-            $isUpdated = $this->Bahan->updateData($data, ['uniqueCode' => $uniqueCode]);
+        if ($this->bahan->getData(['uniqueCode' => $uniqueCode])) {
+            $isUpdated = $this->bahan->updateData($data, ['uniqueCode' => $uniqueCode]);
             if (!$isUpdated) {
                 session()->setFlashdata('message', 'Error');
                 die();
@@ -153,36 +156,36 @@ class Bahan extends BaseController
     }
 
     public function proses_deleteDataBahan($id){
-        $cek = $this->Bahan->deleteData(['uniqueCode' => $id]);
-
-        if(!$cek){
-            return $this->response->setStatusCode(400);
-        }else{
-            return $this->response->setStatusCode(200);
+        $id = $this->bahan->getData(['uniqueCode' => $id], ['id']);
+        if (!$id) {
+            $this->response->setStatusCode(400);
         }
+
+        $cek = $this->bahan->deleteData(['id' => $id]);
+        if(!$cek){
+            $this->response->setStatusCode(400);
+        }else{
+            $this->response->setStatusCode(200);
+        }
+        print('<pre>'.print_r($this->response->getStatusCode(),true).'</pre>');
     }
 
     public function proses_tambahKategoriBahan()
     {
         $kategori = $this->request->getPost('category');
         
-        $idKategori = $this->Kategori->insertData([
-            'nama' => $kategori,
+        $idKategori = $this->kategoriBahan->insertData([
+            'nama'     => $kategori,
             'idUser'   => $this->idUser,
         ]);
 
-        if ($idKategori) {
-            return redirect()->to('/bahan');
+        if (!$idKategori) {
+            session()->setFlashdata('message', 'Error');
+        }else {
+            // mendapatkan uniqueCode
+            $idKategori = $this->kategoriBahan->getData(['id' => $idKategori], ['uniqueCode']);
         }
-    }
-
-    public function getKategori(){
-        return($this->Bahan->getData(0,'kategori'));
-    }
-
-    public function getSubBahan(){
-        $data = ($this->Bahan->getData(0, 'subBahan'));
-        return($data);
+        return redirect()->to('/bahan?kategori='.$idKategori);
     }
 
     public function proses_insertDataResep(){

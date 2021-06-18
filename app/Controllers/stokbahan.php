@@ -23,23 +23,33 @@ class stokbahan extends BaseController
         ]);
 
         if (!$selectedBahan) {
-            $idBahan = 'all';
+            $idBahan = 'All';
             $selectedBahan = 'Semua Bahan';
         }
-
-        // mengambil data stok
-        $model = new stokbahanmodel();
-        $stokArr = ($idBahan && $idBahan != 'all')?
-            $model->getStok($idBahan, $this->idUser)
-            :
-            $model->getStok(0, $this->idUser)
-        ;
 
         // mengambil data bahan
         $bahanArr = $this->bahan->getData(['idUser' => $this->idUser], [
             'uniqueCode', 'nama'
         ]);
-        array_walk($bahanArr, array($this, 'idToUniqueCode'));
+        if (!$bahanArr) {
+            $data = [
+                'stok' => [],
+                'bahan' => [],
+                'selectedBahan' => 'Semua Bahan',
+            ];
+    
+            return view('stok_bahan', $data);
+        }
+        $bahanArr = (isset($bahanArr[0]))?$bahanArr:[$bahanArr];
+        array_walk($bahanArr, array($this, 'idToUniqueCode'));        
+
+        // mengambil data stok
+        $model = new stokbahanmodel();
+        $stokArr = ($idBahan && $idBahan != 'All')?
+            $model->getStok($idBahan, $this->idUser)
+            :
+            $model->getStok(0, $this->idUser)
+        ;
 
         $data = [
             'stok' => $stokArr,
@@ -47,7 +57,7 @@ class stokbahan extends BaseController
             'selectedBahan' => $selectedBahan,
         ];
 
-        echo view('stok_bahan', $data);
+        return view('stok_bahan', $data);
     }
 
     public function update($id)
@@ -62,8 +72,6 @@ class stokbahan extends BaseController
             session()->setFlashdata('message', 'Error');
             return redirect()->to('/stokbahan');
         }
-
-        print('<pre>'.print_r($stok,true).'</pre>');
 
         // Mengambil value dari form dengan method POST
         $jenisStok = $this->request->getPost('jenisStok');

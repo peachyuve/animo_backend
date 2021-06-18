@@ -18,7 +18,7 @@
     <title>Animo | Produk</title>
 
     <?= $this->include('templates/template');?>
-    <script defer="defer" src="source/produk.2c84c619.js"></script>
+    <script defer="defer" src="source/produk.0ce5fc96.js"></script>
   </head>
 
   <body>
@@ -45,6 +45,11 @@
                 <span>&gt;</span>
               </button>
               <ul id="filter-group" class="filter__group">
+                <li class="filter__value">
+                  <a href="?kategori=All">
+                    <h4>Pilih Item</h4>
+                  </a>
+                </li>                
                 <?php foreach ($kategori as $keyKategori => $valKategori) { ?>
                 <li class="filter__value">
                   <a href="?kategori=<?= $valKategori['id'] ?>">
@@ -154,7 +159,7 @@
               </svg>
             </div>
             <form
-              action="/produk/save"
+              action="/produk/input"
               method="POST"
               id="form-add-product"
               enctype="multipart/form-data"
@@ -216,12 +221,12 @@
                 <input
                   id="prod-price"
                   type="number"
-                  step="10000"
+                  step="0"
                   name="price"
                   value="10000"
                   min="0"
                   placeholder="harga"
-                />
+                /> <!-- BE EDIT THIS - step sebelumnya 10000 menjadi 0 -->
               </div>
               <div class="dialog__cta">
                 <button type="button" class="cancel-form button-secondary">Batal</button>
@@ -342,12 +347,12 @@
                 <input
                   id="prod-price-edit"
                   type="number"
-                  step="10000"
+                  step="0"
                   name="price"
                   value="<?= $selectedProduk['harga'] ?>"
                   min="0"
                   placeholder="harga"
-                />
+                /><!-- BE EDIT THIS - step sebelumnya 10000 menjadi 0 -->
               </div>
               <div class="dialog__cta">
                 <button type="button" class="cancel-form button-secondary ">Batal</button>

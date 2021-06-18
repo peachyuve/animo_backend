@@ -5,18 +5,26 @@ class Pesanan extends BaseController
 	public function index()
 	{
 		$idUser = $this->user->getData(['uniqueCode' => session()->get('id')], 'id');
+
+		// get pesanan list
 		$pesananArr = $this->pesanan->getPesanan($idUser, ['pesanan.uniqueCode', 'tglPemesanan', 'produk.nama', 
 			'namaPemesan', 'jumlah', 'statusPembayaran', 'statusPemesanan', 'produk.uniqueCode']);
+		if ($pesananArr) {
+			array_walk($pesananArr, function(&$val){
+				$val['idProduk'] = $val['produk_uniqueCode'];
+			});
+			array_walk($pesananArr, array($this, "idToUniqueCode"));
+		}else {
+			$pesananArr = [];
+		}
 
 		// get produk list
 		$produkArr = $this->produk->getProduks($idUser, 0, ['uniqueCode', 'nama']);
-
-		// handle uniqueCode
-		array_walk($pesananArr, function(&$val){
-			$val['idProduk'] = $val['produk_uniqueCode'];
-		});
-		array_walk($pesananArr, array($this, "idToUniqueCode"));
-		array_walk($produkArr, array($this, "idToUniqueCode"));
+		if ($produkArr) {
+			array_walk($produkArr, array($this, "idToUniqueCode"));
+		}else {
+			$produkArr = [];
+		}
 
 		$data = [
 			'pesanan' => $pesananArr,
@@ -55,7 +63,7 @@ class Pesanan extends BaseController
 			session()->setFlashdata('message', 'Error Validation');
 		}
 		// print json_encode(session()->getFlashData(), JSON_PRETTY_PRINT);
-	
+
 		return redirect()->to('/pesanan');
 	}
 

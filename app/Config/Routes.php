@@ -46,6 +46,7 @@ $routes->get('/', 'Dashboard');
 // produk
 $routes->get('/produk', 'Produk');
 $routes->post('/produk/kategori', 'Produk::tambahKategori');
+$routes->post('/produk/input', 'Produk::save');
 
 // bahan
 $routes->get('/bahan', 'bahan');

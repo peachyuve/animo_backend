@@ -84,7 +84,7 @@
             <tbody>
               <tr>
                 <!-- hapus "table__empty--false" jika ingin memunculkan teks di bawah -->
-                <td class="table__empty table__empty--false pt-5" colspan="7">
+                <td class="table__empty <?= ($stok)?'table__empty--false':null ?> pt-5" colspan="7">
                   Data bahan masih kosong, tambahkan melalui laman bahan
                 </td>
               </tr>

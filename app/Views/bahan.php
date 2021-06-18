@@ -70,6 +70,11 @@
                     <span>&gt;</span>
                   </button>
                   <ul id="filter-group" class="filter__group w-100">
+                    <li class="filter__value">
+                      <a href="?kategori=All">
+                        <h4>Pilih Kategori</h4>
+                      </a>
+                    </li>                    
                     <?php foreach($kategori as $keyKategori => $valKategori){ ?>
                     <li class="filter__value">
                       <a href="?kategori=<?= $valKategori['id'] ?>">
@@ -101,7 +106,7 @@
                   <tr>
                     <!-- hapus "table__empty--false" jika ingin memunculkan teks di bawah -->
                     <td
-                      class="table__empty table__empty--false pt-5"
+                      class="table__empty <?= ($bahan)?'table__empty--false':null ?> pt-5"
                       colspan="7"
                     >
                       Belum ada bahan yang ditambahkan.

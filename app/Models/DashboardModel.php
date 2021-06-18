@@ -6,13 +6,14 @@ use CodeIgniter\Model;
 
 class DashboardModel extends Model
 {
-    public function GetPesanan($column = false, $orderBy = false, $typeOrder = 'desc')
+    public function GetPesanan($column = false, $idUser = false, $orderBy = false, $typeOrder = 'desc')
     {
         $builder = $this->db->table('Produk');
         $builder->select('*');
         $builder->join('Pesanan','Pesanan.idProduk = Produk.id');
 
         $builder->where('Pesanan.deleteDate', null);
+        $builder->where('Produk.idUser', $idUser);
         
         (!$orderBy) ? null : $this->orderBy($orderBy, $typeOrder);
         
@@ -26,37 +27,6 @@ class DashboardModel extends Model
         $result = $resultArr;
         if (!$result) {
             return false;
-        } else {
-            return $result;
-        }
-    }
-
-    public function Stock($column = false, $orderBy = false, $typeOrder = 'desc')
-    {
-        $builder = $this->db->table('Bahan');
-        $builder->select('Bahan.nama, Bahan.satuan, Stok.stokAkhir');
-        $builder->join('Stok','Stok.idBahan = Bahan.id');
-        $builder->where("(stokAkhir < 30 AND satuan = 'Kg')");
-        $builder->orwhere("(stokAkhir < 30 AND satuan = 'liter')");
-        $builder->orwhere("(stokAkhir < 30 AND satuan = 'pcs')");
-        $builder->orwhere("(stokAkhir < 25 AND satuan = 'butir')");
-        
-
-        
-        (!$orderBy) ? null : $this->orderBy($orderBy, $typeOrder);
-        
-        $resultArr = [];
-        $result = $builder->get()->getResultArray();
-        for ($i = 0; $i < count($column); $i++) {
-            for ($j = 0; $j < count($result); $j++) {
-                $resultArr[$j][$column[$i]] = $result[$j][$column[$i]];
-            }
-        }
-        $result = $resultArr;
-        if (!$result) {
-            return false;
-        } elseif (count($result) == 1) {
-            return $result[0];
         } else {
             return $result;
         }
@@ -64,29 +34,14 @@ class DashboardModel extends Model
 
     public function StockHabis($column = false, $idUser = false, $orderBy = false, $typeOrder = 'desc')
     {
-        $builder = $this->db->table('user');
-        $builder->select('Bahan.uniqueCode, Bahan.nama, Bahan.satuan, Stok.stokAkhir');
-        $builder->join('bahan','bahan.idUser = user.id');
-        $builder->join('stok', 'stok.idBahan = bahan.id');
+        $builder = $this->db->table('stok');
+        $builder->select('bahan.uniqueCode, bahan.nama, bahan.satuan, Stok.stokAkhir');
+        $builder->join('bahan','bahan.id = stok.idBahan');
 
-        // $builder->join('produk','produk.idUser = user.id');
-        // $builder->join('porsi','porsi.idProduk = produk.id');
-        // $builder->join('resep','resep.idPorsi = porsi.id');
-        // $builder->join('menggunakan','menggunakan.idResep = resep.id');
-        // $builder->join('bahan','menggunakan.idBahan = bahan.id');
-        // $builder->join('Stok','Stok.idBahan = Bahan.id');
-
-        // $builder->where("user.uniqueCode",$idUser);
-        $builder->where("user.id", $idUser, "and  
-                        ((stokAkhir < 30 AND satuan = 'kg') or 
-                        (stokAkhir < 30 AND satuan = 'liter') or
-                        (stokAkhir < 30 AND satuan = 'pcs') or
-                        (stokAkhir < 25 AND satuan = 'butir'))");
-        // $builder->where("(stokAkhir < 30 AND satuan = 'liter')");
-        // $builder->orwhere("(stokAkhir < 30 AND satuan = 'pcs')");
-        // $builder->orwhere("(stokAkhir < 25 AND satuan = 'butir')");
+        $builder->where("bahan.idUser", $idUser);
+        $builder->where("stok.deleteDate", null);
         
-        (!$orderBy) ? null : $this->orderBy($orderBy, $typeOrder);
+        $builder->orderBy("stok.createDate", "DESC");
         
         $resultArr = [];
         $result = $builder->get()->getResultArray();
@@ -99,6 +54,31 @@ class DashboardModel extends Model
         if (!$result) {
             return false;
         } else {
+            // hapus data bahan duplicate
+            $temp = '';
+            foreach ($result as $keyResult => $valResult) {
+                if ($valResult['uniqueCode'] != $temp) {
+                    $temp = $valResult['uniqueCode'];
+                }else {
+                    unset($result[$keyResult]);
+                }
+            }
+
+            // hapus data stok jika tidak kurang
+            foreach ($result as $keyResult => $valResult) {
+                switch ($valResult) {
+                    case ($valResult['stokAkhir'] > 30 AND $valResult['satuan'] == 'gram'):
+                        unset($result[$keyResult]);
+                        break;
+                    case ($valResult['stokAkhir'] > 30 AND $valResult['satuan'] == 'mililiter'):
+                        unset($result[$keyResult]);
+                        break;
+                    case ($valResult['stokAkhir'] > 5 AND $valResult['satuan'] =='butir'):
+                        unset($result[$keyResult]);
+                        break;
+                }
+            }
+
             return $result;
         }
     }
